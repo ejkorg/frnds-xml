@@ -115,7 +115,8 @@ public class XMLWriter {
      */
     private void writeAtt(String name, String value) throws XMLStreamException {
         if (value != null) {
-            writer.add(eventFactory.createAttribute(name, value));
+            String trimmed = value.trim();
+            writer.add(eventFactory.createAttribute(name, trimmed));
         }
     }
 
@@ -284,14 +285,25 @@ public class XMLWriter {
         for (Map.Entry<Short, String> result : testResults.entrySet()) {
             writeStartElement(Element.MEAS);
             writeAtt(Attribute.MEAS_ID, String.valueOf(result.getKey()));
-            writeAtt(Attribute.MEAS_RESULT, result.getValue());
+            // Normalize placeholders: write "NA" for NULL/empty values
+            String measVal = result.getValue();
+            if (measVal != null) {
+                String trimmed = measVal.trim();
+                if (trimmed.equalsIgnoreCase("NULL") || trimmed.isEmpty()) {
+                    measVal = "NA";
+                } else {
+                    measVal = trimmed;
+                }
+            }
+            writeAtt(Attribute.MEAS_RESULT, measVal);
             
             test = tests.get(result.getKey());
             specMin = test.getLowSpecLimitAsNumber();
             specMax = test.getHighSpecLimitAsNumber();
             pf = null;
             try {
-                val = Double.parseDouble(result.getValue());
+                // try parsing the normalized value
+                val = Double.parseDouble(measVal);
                 short pfCalc = 0;
                 if(specMin != null  && specMax != null){
                     if(!((val >= specMin) && (val <= specMax))){
