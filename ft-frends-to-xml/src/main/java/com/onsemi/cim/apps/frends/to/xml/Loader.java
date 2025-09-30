@@ -52,7 +52,9 @@ public class Loader {
             delimiterIndex = line.indexOf(EQUALS_DELIMITER);
 
             if (delimiterIndex != -1) {
-                data.getMetadata().put(line.substring(0, delimiterIndex), ((delimiterIndex + 1) <= line.length()) ? line.substring(delimiterIndex + 1) : null);
+                String key = line.substring(0, delimiterIndex).trim();
+                String value = ((delimiterIndex + 1) <= line.length()) ? line.substring(delimiterIndex + 1) : null;
+                data.getMetadata().put(key, value != null ? value.trim() : null);
             }
         }
     }
@@ -116,7 +118,7 @@ public class Loader {
         String unit = null;
         
         if(lastLine != null && lastLine.startsWith(ITEM_NAME) && lastLine.contains(EQUALS_DELIMITER)){
-            testname = lastLine.substring(lastLine.indexOf(EQUALS_DELIMITER) + 1);
+            testname = lastLine.substring(lastLine.indexOf(EQUALS_DELIMITER) + 1).trim();
         }
 
         while (true) {
@@ -143,7 +145,7 @@ public class Loader {
 
             if(line != null && line.contains(EQUALS_DELIMITER)){
                 if (line.startsWith(ITEM_NAME)){
-                    testname = line.substring(line.indexOf(EQUALS_DELIMITER) + 1);
+                    testname = line.substring(line.indexOf(EQUALS_DELIMITER) + 1).trim();
                 } else if (line.startsWith(SPEC_MAX)) {
                     highSpecLimit = line.substring(line.indexOf(EQUALS_DELIMITER) + 1).trim();
                 } else if (line.startsWith(SPEC_MIN)) {
