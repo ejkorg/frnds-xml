@@ -1,0 +1,6 @@
+# Ignore build artifacts and IDE files for ft-frends-to-xml
+ft-frends-to-xml/build/
+ft-frends-to-xml/target/
+ft-frends-to-xml/lib/*.jar
+ft-frends-to-xml/tmp/
+ft-frends-to-xml/.idea/
