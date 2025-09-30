@@ -18,8 +18,8 @@ public class Translate {
     @Option(name="-i", aliases = { "--input" }, required = true, usage="Input file", metaVar="INPUT")
     private File in;
     
-    @Option(name="-data_type", usage="Enable tolerant parsing for alternate ASC dialects (optional)")
-    private boolean dataType = false;
+    @Option(name="-data_type", usage="Data type hint (use 'FT' to enable tolerant parsing). Tolerant parsing is enabled only when -data_type=FT.")
+    private String dataType = null;
     
     public static void main (String[] args){
         new Translate().doMain(args);
@@ -39,7 +39,9 @@ public class Translate {
         }
 
         try {
-            Translator translator = new Translator(in, out, false, false, dataType);
+            // decide tolerant parsing: true only if explicit -data_type=FT
+            boolean tolerant = (dataType != null && dataType.equalsIgnoreCase("FT"));
+            Translator translator = new Translator(in, out, false, false, tolerant);
             translator.translate();
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
